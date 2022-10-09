@@ -156,8 +156,8 @@ getIPs().then((res) => {
   
 var result = JSON.stringify(res) ;
   alert(result);
-//   result = result.split(",");
-//   result = result[0];
+  result = result.split(",");
+  result = result[0];
   alert(result);
   result = result.slice(1, result.length - 1);
   alert(result);
