@@ -153,9 +153,10 @@ function clearInputs() {
 // getIPs().then((res) => document.write(res));
 
 getIPs().then((res) => {
-  var result = JSON.stringify(res);
+  
+  var result = JSON.stringify(res[0]);
   // console.log(result);
-  result = result.slice(2, result.length - 2);
+  result = result.slice(1, result.length - 1);
   alert(result);
   console.log(result.length);
 });
