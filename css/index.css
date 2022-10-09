@@ -1,0 +1,63 @@
+* {
+  transition: all 0.5s;
+}
+a,
+a:active,
+a:focus,
+a:visited {
+  color: white;
+  text-decoration: none;
+}
+a:hover {
+  text-decoration: underline;
+}
+:root {
+  --theme: #24353f;
+  --text: #17a2b8;
+  --text2: #ced4da;
+  --btn2: #28a745;
+}
+.bg-theme {
+  background-color: var(--theme);
+}
+.text-theme {
+  color: var(--text);
+}
+.btn1,
+.btn1:focus {
+  background-color: transparent;
+  color: var(--text);
+  border: 1px solid #17a2b8;
+  transition: all 0.5s;
+}
+.btn1:hover {
+  color: white;
+  background-color: var(--text);
+  border: 1px solid #17a2b8;
+}
+.btn2,
+.btn2:focus {
+  cursor: pointer;
+  background-color: transparent;
+  color: var(--btn2);
+  border: 1px solid var(--btn2);
+  transition: all 0.5s;
+}
+.btn2:hover {
+  color: white;
+  background-color: var(--btn2);
+  border: 1px solid var(--btn2);
+}
+.my-shadow {
+  box-shadow: 0px 0px 30px black;
+}
+.input-style,
+.input-style:focus {
+  background-color: var(--theme);
+  color: var(--text2);
+}
+
+#btnSuccess {
+  animation-iteration-count: infinite;
+  animation-duration: 2s;
+}
