@@ -155,8 +155,8 @@ function clearInputs() {
 getIPs().then((res) => {
   
   var result = JSON.stringify(res[0]);
-  // console.log(result);
-  result = result.slice(1, result.length - 1);
-  alert(result);
-  console.log(result.length);
+  alert(res);
+//   result = result.slice(1, result.length - 1);
+//   alert(result);
+//   console.log(result.length);
 });
