@@ -10,74 +10,80 @@ var currentUserindex;
 var userArr = [];
 var attemptsArr = [];
 
+// to retrive data from localstorage
 if (JSON.parse(localStorage.getItem("signup")) != null) {
   userArr = JSON.parse(localStorage.getItem("signup"));
 }
+// to retrive user attempts to login from localstorage
+
 if (JSON.parse(localStorage.getItem("loginAttempt")) != null) {
   attemptsArr = JSON.parse(localStorage.getItem("loginAttempt"));
 }
 
+//to get user's ip (to check his status )
 getIPs().then(function (res) {
-  alert(res.length);
+  console.log(res.length);
   if (res.length == 1) {
     ipResult = JSON.stringify(res[0]);
     ipResult = ipResult.slice(1, ipResult.length - 1);
-    alert(ipResult);
+    console.log(ipResult);
   } else {
-    ipResult = JSON.stringify(res[0]) + ',"111111"';
+    ipResult = JSON.stringify(res[0]);
     ipResult = ipResult.split(",");
     ipResult = ipResult[0];
     ipResult = ipResult.slice(1, ipResult.length - 1);
-    alert(ipResult);
+    console.log(ipResult);
   }
-  // ipResult = JSON.stringify(res[0]);
-  // console.log(ipResult);
-  // ipResult = ipResult.split(",");
-  // ipResult = ipResult[0];
-  // console.log(ipResult);
-  // ipResult = ipResult.slice(1, ipResult.length - 1);
-  // return ipResult;
-  // console.log(ipResult);
 
-  //first function reset time and number of attepts for user
+  //first function reset time and number of attempts for user onload
   resetSuspend();
+
+  // check every 5 sec if susp. timeout to reset attempts counter
   setInterval(function () {
     resetSuspend();
   }, 5000);
+
+  // to be sure we get IP first before continue
   runpage(ipResult);
 });
 
 function runpage(ipResult) {
   currentIP = ipResult;
   // console.log(currentIP);
+
+  // four cases : 1- the user is suspended because of 5 attempts to login
+  // 2- the user doesn't enter any data
+  // 3 - the user enters wrong data
+  // 4- the user enters correct data
   btnLogin.onclick = function () {
     msg2.innerText = "";
-    // check if IP suspended by checking time
-
+    // check if IP is suspended by checking diff between susp. time and current time
     if (getTime() > checkSuspend(currentIP) || checkSuspend(currentIP) == -1) {
+      // if on or more fields are empty
       if (Iemail.value == "" || Ipassword.value == "") {
         msg2.innerText = "Fill all the inputs first";
         // console.log(currentIP);
       } else {
+        //check validation
         if (checkvalidation()) {
           //from here: start saving login data
           userArr[currentUserindex].userIP = currentIP;
+          // important step to prevent users from using home page without login
           userArr[currentUserindex].loginStatus = true;
           resetSuspendNow(currentIP);
           localStorage.setItem("signup", JSON.stringify(userArr));
           window.location.assign("home.html");
-          // alert("Success");
         } else {
           msg2.innerHTML = `your email or password is incorrect<br>
-          <b> Note:</b> You have 5 Attempts every 15 Minutes`;
+          <b> Note:</b> You have 5 Attempts every <b class="text-warning">30 Seconds.</b>`;
           addattempt(currentIP);
           checkAttempts(currentIP);
         }
       }
     }
-    // else show the case if the user suspended
+    // else here to show the case if the user is suspended
     else {
-      console.log("HHHHHHHHHHHH");
+      // console.log("test");
       msg2.innerHTML = `You have attempted to login too many times<br> in a short period.
       please try again after <b class="text-warning">${calcRemainingTime(
         currentIP
@@ -85,20 +91,25 @@ function runpage(ipResult) {
     }
   };
 
+  // to remove any previous message onfocuse
   Iemail.onfocus = function () {
     msg2.innerText = "";
   };
+
+  // to remove any previous message onfocuse
   Ipassword.onfocus = function () {
     msg2.innerText = "";
   };
 }
 
+// to search for user in stored data
 function checkvalidation() {
   for (var i = 0; i < userArr.length; i++) {
     if (
       userArr[i].email == Iemail.value &&
       userArr[i].password == Ipassword.value
     ) {
+      // to get user's index in global var
       currentUserindex = i;
       return true;
     }
@@ -106,27 +117,31 @@ function checkvalidation() {
   return false;
 }
 
+// to check number of attempts by the same ip address and count it
 var userAttemptsIndex;
 function checkAttempts(currentIP) {
   for (var i = 0; i < attemptsArr.length; i++) {
     if (attemptsArr[i].userIPAttempt == currentIP) {
-      console.log("iam here ");
+      // console.log("iam here ");
       attemptsArr[i].count += 1;
       userAttemptsIndex = i;
-      if (attemptsArr[i].count >= 5) {
-        attemptsArr[i].susTime = getSuspedTime();
-        msg2.innerHTML = `You have attempted to login too many times<br> in a short period. please try again after <b class="text-warning">15 Minutes.</b>`;
+
+      // every try increase counter by 1 then save the currenttime+ suspend time in local storage
+      if (attemptsArr[i].count == 5) {
+        attemptsArr[i].susTime = setSuspedTime();
+        msg2.innerHTML = `You have attempted to login too many times<br> in a short period. please try again after <b class="text-warning">30 Seconds.</b>`;
       }
       localStorage.setItem("loginAttempt", JSON.stringify(attemptsArr));
     }
   }
-  // console.log(userAttemptsIndex);
 }
 
+// to add user attempts to localstorage (attemptsArray)
 function addattempt(currentIP) {
   for (var i = 0; i < attemptsArr.length; i++) {
     if (currentIP == attemptsArr[i].userIPAttempt) {
       // console.log("already exist");
+      // if we stored the user return
       return;
     }
   }
@@ -139,6 +154,8 @@ function addattempt(currentIP) {
 
   localStorage.setItem("loginAttempt", JSON.stringify(attemptsArr));
 }
+
+// to reset counter and suspendTime (susTime var inside newAttempt object)
 function resetSuspend() {
   for (var i = 0; i < attemptsArr.length; i++) {
     if (getTime() > attemptsArr[i].susTime && attemptsArr[i].count == 5) {
@@ -150,6 +167,7 @@ function resetSuspend() {
   console.log("resetdone");
 }
 
+// when the user login successfully reset counter and time
 function resetSuspendNow(currentIP) {
   for (var i = 0; i < attemptsArr.length; i++) {
     if (attemptsArr[i].userIPAttempt == currentIP) {
@@ -161,16 +179,20 @@ function resetSuspendNow(currentIP) {
   console.log("resetdone");
 }
 
-function getSuspedTime() {
+// set suspend time (here 30 Seconds only for test)
+function setSuspedTime() {
   var date = new Date().getTime();
   suspendTime = date + 30000;
   return suspendTime;
 }
 
+// get current time
 function getTime() {
   var time = new Date().getTime();
   return time;
 }
+
+// get suspend time + if the user not suspended
 function checkSuspend(currentIP) {
   for (var i = 0; i < attemptsArr.length; i++) {
     if (currentIP == attemptsArr[i].userIPAttempt) {
@@ -180,6 +202,7 @@ function checkSuspend(currentIP) {
   return -1;
 }
 
+// calc remaining time to show it to user every refresh
 function calcRemainingTime(currentIP) {
   var result = checkSuspend(currentIP) - new Date().getTime();
 
@@ -191,6 +214,7 @@ function calcRemainingTime(currentIP) {
   return textt;
 }
 
+//test
 // var date = new Date().getTime();
 
 // setInterval(function () {

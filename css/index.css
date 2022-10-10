@@ -25,7 +25,6 @@ a:hover {
   background-color: var(--theme1);
 }
 .bg-img {
-  /* height: 100vh; */
   background-image: url(../image/bg.jpg);
   background-position: center center;
   background-size: cover;
