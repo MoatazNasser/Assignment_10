@@ -152,15 +152,16 @@ function clearInputs() {
 
 // getIPs().then((res) => document.write(res));
 
-getIPs().then((res) => {
-  
-var result = JSON.stringify(res) ;
-  alert(result);
-  result = result.split(",");
-  result = result[0];
-  alert(result);
-  result = result.slice(1, result.length - 1);
-  alert(result);
-
-  console.log(result.length);
-});
+getIPs().then(function (res) {
+  alert(res.length);
+  if (res.length == 1) {
+    ipResult = JSON.stringify(res[0]);
+    ipResult = ipResult.slice(1, ipResult.length - 1);
+    alert(ipResult);
+  } else {
+    ipResult = JSON.stringify(res[0]) + ',"111111"';
+    ipResult = ipResult.split(",");
+    ipResult = ipResult[0];
+    ipResult = ipResult.slice(1, ipResult.length - 1);
+    alert(ipResult);
+  }
