@@ -13,12 +13,23 @@ a:hover {
 }
 :root {
   --theme: #24353f;
+  --theme1: #24353fc6;
   --text: #17a2b8;
-  --text2: #ced4da;
+  --text2: #e6ecf3;
   --btn2: #28a745;
 }
 .bg-theme {
   background-color: var(--theme);
+}
+.bg-theme1 {
+  background-color: var(--theme1);
+}
+.bg-img {
+  /* height: 100vh; */
+  background-image: url(../image/bg.jpg);
+  background-position: center center;
+  background-size: cover;
+  background-attachment: fixed;
 }
 .text-theme {
   color: var(--text);
